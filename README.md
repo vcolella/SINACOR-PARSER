@@ -1,5 +1,7 @@
 # SINACOR-PARSER
-Parser para notas de corretagem no formato SINACOR. 
+Parser gratuito para notas de corretagem no formato SINACOR que não requer conexão com internet ou compartilhamento de suas notas de corretagem.
+
+O objetivo inicial é fornecer um resumo simples da quantidade de cotas de cada ativo, preço médio e total do patrimônio.
 
 ## Utilização
 
