@@ -1,6 +1,7 @@
 import pdfplumber
 import re
 import os
+import json
 # import numpy as np
 import pandas as pd
 from collections import namedtuple
@@ -14,6 +15,14 @@ def trunc(num, digits):
     sp = str(num).split('.')  # divide em parte inteira e decimais
     # junta string da parte inteira e numero de digitos desejados
     return float('.'.join([sp[0], sp[1][:digits]]))
+
+
+def busca_sigla(esp_titulo):
+    with open('.\DB_ativos.json', encoding='utf8') as f:
+        data = json.load(f)
+        for ativo in data['result']:
+            if ativo['nome_pregao'].replace(' ', '') in esp_titulo.replace(' ', ''):
+                return ativo['sigla']
 
 
 # Lista com caminhos das notas
@@ -38,29 +47,22 @@ Neg = namedtuple(
 # .*([A-Z])\sVISTA([\w ]*)([A-Z]{2})(.*)([A-Z]{1})
 
 # reg_geral = r'1-BOVESPA (C|V)\s*(OPCAO DE COMPRA|OPCAO DE VENDA|EXERC OPC VENDA|VISTA|FRACIONARIO|TERMO)?(.*(\w{4}\d{2}).*)\s(\d{1,})\s(\d+,\d{2})\s(.*,\d{2})\s(C|D)' # Funcinona para fiis mas nao para acoes
-# Nao captura sigla do fii
-reg_geral = r'^1-BOVESPA (C|V)\s+(OPCAO DE COMPRA|OPCAO DE VENDA|EXERC OPC VENDA|VISTA|FRACIONARIO|TERMO)\s+(.*)\s+(\d+)\s(\d+,\d{2})\s(.*,\d{2})\s(C|D)$'
-linha_negocio_re = re.compile(reg_geral)
+
+linha_negocio_re = re.compile(
+    r'^1-BOVESPA (C|V)\s+(OPCAO DE COMPRA|OPCAO DE VENDA|EXERC OPC VENDA|VISTA|FRACIONARIO|TERMO)\s+(.*)\s+(\d+)\s(\d+,\d{2})\s(.*,\d{2})\s(C|D)$')  # Nao captura sigla do fii
 
 # REGEX para ativos no caso de corretoras que trazem
-reg_ativo = r'[A-Z]{4}\d{1,2}'
-ativo_re = re.compile(reg_ativo)
+ativo_re = re.compile(r'[A-Z]{4}\d{1,2}')
 
-reg_val_liq = r'Valor líquido das operações (.*,\d{2})'
-val_liq_re = re.compile(reg_val_liq)
+val_liq_re = re.compile(r'Valor líquido das operações (.*,\d{2})')
 
-reg_taxa_liq = r'Taxa de liquidação (.*,\d{2})'
-taxa_liq_re = re.compile(reg_taxa_liq)
+taxa_liq_re = re.compile(r'Taxa de liquidação (.*,\d{2})')
 
-reg_emol = r'Emolumentos (.*,\d{2})'
-emol_re = re.compile(reg_emol)
+emol_re = re.compile(r'Emolumentos (.*,\d{2})')
 
-reg_valor_tot = r'Líquido para \d{2}/\d{2}/\d{4} (.*,\d{2}).*'
-valor_tot_re = re.compile(reg_valor_tot)
+valor_tot_re = re.compile(r'Líquido para \d{2}/\d{2}/\d{4} (.*,\d{2}).*')
 
-
-reg_data = r'\d{2}/\d{2}/\d{4}'
-data_re = re.compile(reg_data)
+data_re = re.compile(r'\d{2}/\d{2}/\d{4}')
 
 
 # LISTAS
@@ -87,28 +89,31 @@ for nota in notas:
 
         for line in text.split('\n'):
             # print(line)
-
             if linha_negocio_re.match(line):
-                COMPRA_VENDA = linha_negocio_re.match(line).group(1)
-                ESP_TITULO = linha_negocio_re.match(line).group(3)
+                compra_venda = linha_negocio_re.match(line).group(1)
+                esp_titulo = linha_negocio_re.match(line).group(3)
 
-                if ativo_re.search(ESP_TITULO):
-                    ATIVO = ativo_re.search(ESP_TITULO).group(0)
+                if ativo_re.search(esp_titulo):
+                    ativo = ativo_re.search(esp_titulo).group(0)
                 else:
-                    ATIVO = ESP_TITULO
+                    ativo = busca_sigla(esp_titulo)
 
-                QUANTIDADE = int(linha_negocio_re.match(line).group(4))
-                PRECO_AJUSTE = float(linha_negocio_re.match(
+                quantidade = int(linha_negocio_re.match(line).group(4))
+
+                preco_ajuste = float(linha_negocio_re.match(
                     line).group(5).replace(',', '.'))
-                VALOR_OPERACAO = float(linha_negocio_re.match(
+
+                valor_operacao = float(linha_negocio_re.match(
                     line).group(6).replace('.', '').replace(',', '.'))
-                TAXAS = QUANTIDADE * PRECO_AJUSTE * \
+
+                taxas = quantidade * preco_ajuste * \
                     (emol + taxa_liq) / valor_liq
-                TOTAL = QUANTIDADE * PRECO_AJUSTE * \
+
+                total = quantidade * preco_ajuste * \
                     (1 + (emol + taxa_liq) / valor_liq)
 
-                negociacoes.append(Neg(COMPRA_VENDA, ESP_TITULO, ATIVO, QUANTIDADE,
-                                       PRECO_AJUSTE, VALOR_OPERACAO, TAXAS, TOTAL, data))
+                negociacoes.append(Neg(compra_venda, esp_titulo, ativo, quantidade,
+                                       preco_ajuste, valor_operacao, taxas, total, data))
 
     # print(f'Valor líquido das operações : {valor_liq}')
     # print(f'Taxa de liquidação : {taxa_liq}')
