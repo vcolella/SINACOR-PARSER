@@ -10,6 +10,7 @@ Parser para notas de corretagem no formato SINACOR.
     > python .\parser.py
     ```
 
-## TODO
-1. Reorganizar arquivos para o repo
-2. Atualizar todo .
+### TODO
+- [x] Reorganizar arquivos para o repo
+- [ ] Definir objetivo do programa
+- [ ] Atualizar `todo`
