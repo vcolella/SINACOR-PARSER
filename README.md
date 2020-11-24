@@ -14,5 +14,3 @@ O objetivo inicial é fornecer um resumo simples da quantidade de cotas de cada 
 
 ### TODO
 - [x] Reorganizar arquivos para o repo
-- [ ] Definir objetivo do programa
-- [ ] Atualizar `todo`
