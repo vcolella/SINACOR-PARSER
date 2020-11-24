@@ -2,7 +2,6 @@ import pdfplumber
 import re
 import os
 import json
-# import numpy as np
 import pandas as pd
 from collections import namedtuple
 
@@ -18,6 +17,9 @@ def trunc(num, digits):
 
 
 def busca_sigla(esp_titulo):
+    '''
+    Busca sigla de um ativo na base de dados a partir da especificacao do titulo
+    '''
     with open('.\DB_ativos.json', encoding='utf8') as f:
         data = json.load(f)
         for ativo in data['result']:
@@ -88,7 +90,6 @@ for nota in notas:
             print(data)
 
         for line in text.split('\n'):
-            # print(line)
             if linha_negocio_re.match(line):
                 compra_venda = linha_negocio_re.match(line).group(1)
                 esp_titulo = linha_negocio_re.match(line).group(3)
@@ -115,22 +116,15 @@ for nota in notas:
                 negociacoes.append(Neg(compra_venda, esp_titulo, ativo, quantidade,
                                        preco_ajuste, valor_operacao, taxas, total, data))
 
-    # print(f'Valor líquido das operações : {valor_liq}')
-    # print(f'Taxa de liquidação : {taxa_liq}')
-    # print(f'Emolumentos : {emol}')
-    # print(f'Líquido para data : {valor_tot}')
-
-
 resumo = pd.DataFrame(negociacoes)
-
-# print(resumo)
 
 resumo['data'] = pd.to_datetime(resumo['data'], dayfirst=True)
 
-# Funcao para criar grupos
 
-
-def my_fun(grp_obj):
+def groupReport(grp_obj):
+    '''
+    Funcao para criar filtro de grupos
+    '''
     d = {}
     d['cotas'] = grp_obj.qtd.sum()
     d['total'] = grp_obj.total.sum()
@@ -139,6 +133,5 @@ def my_fun(grp_obj):
     return pd.Series(d, index=['cotas', 'preco_medio', 'total'])
 
 
-bla = resumo.groupby(['ativo'], as_index=True).apply(my_fun).round(2)
-print(bla)
-# print(resumo.sum())
+report = resumo.groupby(['ativo'], as_index=True).apply(groupReport).round(2)
+print(report)
