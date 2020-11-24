@@ -12,5 +12,11 @@ O objetivo inicial é fornecer um resumo simples da quantidade de cotas de cada 
     > python .\parser.py
     ```
 
-### TODO
+## TODO
 - [x] Reorganizar arquivos para o repo
+- [ ] Separar relatórios por cpf
+- [ ] Rastrear vendas
+- [ ] Cálculo de DARF para vendas (?)
+- [ ] Implemntar exportação p/ planilha
+
+
