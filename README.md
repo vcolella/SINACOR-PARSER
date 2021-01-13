@@ -11,6 +11,7 @@ O objetivo inicial é fornecer um resumo simples da quantidade de cotas de cada 
     ```
     > python .\parser.py
     ```
+    ATENÇÂO: Esta ferramenta encontra-se em desenvolvimento e pode produzir resultados incorretos. Deste modo, não me responsabilizo pela confiabilidade das informações geradas com esta aplicação.
 
 ## TODO
 - [x] Reorganizar arquivos para o repo
