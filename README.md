@@ -17,6 +17,7 @@ O objetivo inicial é fornecer um resumo simples da quantidade de cotas de cada 
 - [ ] Separar relatórios por cpf
 - [ ] Rastrear vendas
 - [ ] Cálculo de DARF para vendas (?)
-- [ ] Implemntar exportação p/ planilha
+- [x] Implemntar exportação p/ planilha
+- [x] Ler arquivos de múltiplas páginas
 
 
