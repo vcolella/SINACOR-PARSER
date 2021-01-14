@@ -63,7 +63,7 @@ class SinacorParser():
 
         # Namedtuple para organizar a lista de negociacoes
         Neg = namedtuple(
-            'Neg', 'compra_venda titulo ativo qtd preco valor_operacao taxas total data')
+            'Neg', 'compra_venda titulo ativo qtd preco valor_operacao taxas total nr_nota nr_folha data corretora')
 
         # REGEX
         # market_types = [
@@ -93,6 +93,7 @@ class SinacorParser():
         valor_tot_re = re.compile(
             r'Líquido para \d{2}/\d{2}/\d{4} (.*,\d{2}).*')
 
+        cabecalho_re = re.compile(r'(\d+)\s+(\d+)\s+(\d{2}/\d{2}/\d{4})')
         data_re = re.compile(r'\d{2}/\d{2}/\d{4}')
 
         # LISTAS
@@ -106,8 +107,11 @@ class SinacorParser():
                     # Leitura do arquivo
                     # page = pdf.pages[0]
                     text = page.extract_text()
-
-                    data = data_re.search(text).group(0)  # Data
+                    corretora = text.splitlines()[3]
+                    cabecalho = cabecalho_re.search(text)
+                    nr_nota = cabecalho.group(1)
+                    nr_folha = cabecalho.group(2)
+                    data = cabecalho.group(3)  # Data
                     valor_liq = float(val_liq_re.search(text).group(
                         1).replace('.', '').replace(',', '.'))  # Valor liquido
                     taxa_liq = float(taxa_liq_re.search(text).group(1).replace(
@@ -144,7 +148,7 @@ class SinacorParser():
                                 (1 + (emol + taxa_liq) / valor_liq)
 
                             negociacoes.append(Neg(compra_venda, esp_titulo, ativo, quantidade,
-                                                   preco_ajuste, valor_operacao, taxas, total, data))
+                                                   preco_ajuste, valor_operacao, taxas, total, nr_nota, nr_folha, data, corretora))
                             # if j > 0:
                             #     print(negociacoes[-1])
                             # FIM DA LEITURA DO ARQUIVO
