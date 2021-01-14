@@ -112,46 +112,50 @@ class SinacorParser():
                     nr_nota = cabecalho.group(1)
                     nr_folha = cabecalho.group(2)
                     data = cabecalho.group(3)  # Data
-                    valor_liq = float(val_liq_re.search(text).group(
-                        1).replace('.', '').replace(',', '.'))  # Valor liquido
-                    taxa_liq = float(taxa_liq_re.search(text).group(1).replace(
-                        '.', '').replace(',', '.'))  # Taxa de liquidacao
-                    emol = float(emol_re.search(text).group(1).replace(
-                        '.', '').replace(',', '.'))  # Emolumentos
-                    valor_tot = float(valor_tot_re.search(text).group(
-                        1).replace('.', '').replace(',', '.'))  # Valor total
 
-                    for line in text.split('\n'):
-                        if linha_negocio_re.match(line):
-                            compra_venda = linha_negocio_re.match(
-                                line).group(1)
-                            esp_titulo = linha_negocio_re.match(line).group(3)
+                    # Cheque de nota repetida
+                    if [neg for neg in negociacoes if neg.nr_nota == nr_nota and neg.nr_folha == nr_folha and neg.data == data] == []:
 
-                            if ativo_re.search(esp_titulo):
-                                ativo = ativo_re.search(esp_titulo).group(0)
-                            else:
-                                ativo = self.busca_sigla(esp_titulo)
+                        valor_liq = float(val_liq_re.search(text).group(
+                            1).replace('.', '').replace(',', '.'))  # Valor liquido
+                        taxa_liq = float(taxa_liq_re.search(text).group(1).replace(
+                            '.', '').replace(',', '.'))  # Taxa de liquidacao
+                        emol = float(emol_re.search(text).group(1).replace(
+                            '.', '').replace(',', '.'))  # Emolumentos
+                        valor_tot = float(valor_tot_re.search(text).group(
+                            1).replace('.', '').replace(',', '.'))  # Valor total
 
-                            quantidade = int(
-                                linha_negocio_re.match(line).group(4))
+                        for line in text.split('\n'):
+                            if linha_negocio_re.match(line):
+                                compra_venda = linha_negocio_re.match(
+                                    line).group(1)
+                                esp_titulo = linha_negocio_re.match(
+                                    line).group(3)
 
-                            preco_ajuste = float(linha_negocio_re.match(
-                                line).group(5).replace(',', '.'))
+                                if ativo_re.search(esp_titulo):
+                                    ativo = ativo_re.search(
+                                        esp_titulo).group(0)
+                                else:
+                                    ativo = self.busca_sigla(esp_titulo)
 
-                            valor_operacao = float(linha_negocio_re.match(
-                                line).group(6).replace('.', '').replace(',', '.'))
+                                quantidade = int(
+                                    linha_negocio_re.match(line).group(4))
 
-                            taxas = quantidade * preco_ajuste * \
-                                (emol + taxa_liq) / valor_liq
+                                preco_ajuste = float(linha_negocio_re.match(
+                                    line).group(5).replace(',', '.'))
 
-                            total = quantidade * preco_ajuste * \
-                                (1 + (emol + taxa_liq) / valor_liq)
+                                valor_operacao = float(linha_negocio_re.match(
+                                    line).group(6).replace('.', '').replace(',', '.'))
 
-                            negociacoes.append(Neg(compra_venda, esp_titulo, ativo, quantidade,
-                                                   preco_ajuste, valor_operacao, taxas, total, nr_nota, nr_folha, data, corretora))
-                            # if j > 0:
-                            #     print(negociacoes[-1])
-                            # FIM DA LEITURA DO ARQUIVO
+                                taxas = quantidade * preco_ajuste * \
+                                    (emol + taxa_liq) / valor_liq
+
+                                total = quantidade * preco_ajuste * \
+                                    (1 + (emol + taxa_liq) / valor_liq)
+
+                                negociacoes.append(Neg(compra_venda, esp_titulo, ativo, quantidade,
+                                                       preco_ajuste, valor_operacao, taxas, total, nr_nota, nr_folha, data, corretora))
+                                # FIM DA LEITURA DO ARQUIVO
 
             print(str(i) + ' de ' +
                   str(len(notas)) + ' documentos lidos.', end='\r')
