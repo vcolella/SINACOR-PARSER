@@ -189,8 +189,41 @@ class SinacorParser():
 
         def export():
             name = input('  >> Nome do arquivo : ')
-            self.report.to_excel(os.path.join(
-                os.getcwd(), 'output', name + ".xlsx"))
+
+            # Create a Pandas Excel writer using XlsxWriter as the engine.
+            writer = pd.ExcelWriter(os.path.join(
+                os.getcwd(), 'output', name + ".xlsx"), engine='xlsxwriter')
+
+            # Convert the dataframe to an XlsxWriter Excel object. Turn off the default
+            # header and index and skip one row to allow us to insert a user defined
+            # header.
+            self.report.to_excel(
+                writer, sheet_name='Consolidado', startrow=1, header=False, index=False)
+
+            # Get the xlsxwriter workbook and worksheet objects.
+            workbook = writer.book
+            worksheet = writer.sheets['Consolidado']
+
+            # Get the dimensions of the dataframe.
+            (max_row, max_col) = self.report.shape
+
+            # Create a list of column headers, to use in add_table().
+            column_settings = []
+            for header in self.report.columns:
+                column_settings.append({'header': header})
+
+            # Add the table.
+            worksheet.add_table(0, 0, max_row, max_col - 1,
+                                {'columns': column_settings})
+
+            # Make the columns wider for clarity.
+            worksheet.set_column(0, max_col - 1, 12)
+
+            # Close the Pandas Excel writer and output the Excel file.
+            writer.save()
+
+            # self.report.to_excel(os.path.join(
+            #     os.getcwd(), 'output', name + ".xlsx"))
             self.menu()
 
         def resumo():
