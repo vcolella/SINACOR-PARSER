@@ -11,14 +11,14 @@ O objetivo inicial é fornecer um resumo simples da quantidade de cotas de cada 
     ```
     > python .\parser.py
     ```
-    ATENÇÂO: Esta ferramenta encontra-se em desenvolvimento e pode produzir resultados incorretos. Deste modo, não me responsabilizo pela confiabilidade das informações geradas com esta aplicação.
+    > :warning: **ATENÇÃO** : Esta ferramenta encontra-se em desenvolvimento e pode produzir resultados incorretos. Deste modo, não me responsabilizo pela confiabilidade das informações geradas com esta aplicação.
 
 ## TODO
 - [x] Reorganizar arquivos para o repo
 - [ ] Separar relatórios por cpf
 - [ ] Rastrear vendas
 - [ ] Cálculo de DARF para vendas (?)
-- [x] Implemntar exportação p/ planilha
+- [x] Implementar exportação p/ planilha
 - [x] Ler arquivos de múltiplas páginas
 - [ ] Desconsiderar notas de corretagem repetidas
 
