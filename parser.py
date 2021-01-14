@@ -162,14 +162,15 @@ class SinacorParser():
             i += 1
 
         print('\n\n')
-        resumo = pd.DataFrame(negociacoes)
-        resumo['data'] = pd.to_datetime(resumo['data'], dayfirst=True)
+        df_negotiations = pd.DataFrame(negociacoes)
+        df_negotiations['data'] = pd.to_datetime(
+            df_negotiations['data'], dayfirst=True)
 
-        report = resumo.groupby(['ativo'], as_index=True).apply(
+        report = df_negotiations.groupby(['ativo'], as_index=True).apply(
             self.groupReport).round(2)
         print(report)
 
-        return resumo, negociacoes
+        return report, df_negotiations
 
     def printBreak(self):
         print('===============================================')
@@ -198,26 +199,38 @@ class SinacorParser():
             # header and index and skip one row to allow us to insert a user defined
             # header.
             self.report.to_excel(
-                writer, sheet_name='Consolidado', startrow=1, header=False, index=False)
+                writer, sheet_name='Consolidado', startrow=1, header=False, index=True)
+
+            self.negotiations.to_excel(
+                writer, sheet_name='Negociações', startrow=1, header=False, index=False)
 
             # Get the xlsxwriter workbook and worksheet objects.
             workbook = writer.book
-            worksheet = writer.sheets['Consolidado']
+            worksheet_report = writer.sheets['Consolidado']
+            worksheet_negotiations = writer.sheets['Negociações']
 
             # Get the dimensions of the dataframe.
-            (max_row, max_col) = self.report.shape
+            (max_row_report, max_col_report) = self.report.shape
+            (max_row_negotiations, max_col_negotiations) = self.negotiations.shape
 
             # Create a list of column headers, to use in add_table().
-            column_settings = []
+            column_settings_report = [{'header': 'ativo'}]
+            column_settings_negotiations = []
             for header in self.report.columns:
-                column_settings.append({'header': header})
+                column_settings_report.append({'header': header})
+
+            for header in self.negotiations.columns:
+                column_settings_negotiations.append({'header': header})
 
             # Add the table.
-            worksheet.add_table(0, 0, max_row, max_col - 1,
-                                {'columns': column_settings})
+            worksheet_report.add_table(0, 0, max_row_report, max_col_report,
+                                       {'columns': column_settings_report})
+            worksheet_negotiations.add_table(0, 0, max_row_negotiations, max_col_negotiations - 1,
+                                             {'columns': column_settings_negotiations})
 
             # Make the columns wider for clarity.
-            worksheet.set_column(0, max_col - 1, 12)
+            worksheet_report.set_column(0, max_col_report - 1, 12)
+            worksheet_negotiations.set_column(0, max_col_negotiations - 1, 12)
 
             # Close the Pandas Excel writer and output the Excel file.
             writer.save()
