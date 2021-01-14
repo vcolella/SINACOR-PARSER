@@ -20,6 +20,6 @@ O objetivo inicial é fornecer um resumo simples da quantidade de cotas de cada 
 - [ ] Cálculo de DARF para vendas (?)
 - [x] Implementar exportação p/ planilha
 - [x] Ler arquivos de múltiplas páginas
-- [ ] Desconsiderar notas de corretagem repetidas
-
+- [x] Desconsiderar notas de corretagem repetidas
+- [ ] Adicionar exportação de `csv` 
 
