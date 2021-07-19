@@ -177,7 +177,7 @@ class SinacorParser():
 
     def menu(self):
         self.printBreak()
-        print('#### MENU DE FUNÇÔES####')
+        print('#### MENU DE FUNÇÕES####')
         print('(P) - Processar notas de corretagem')
         print('(E) - Exportar notas de corretagem')
         print('(R) - Resumo das operações')
