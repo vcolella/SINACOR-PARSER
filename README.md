@@ -17,18 +17,21 @@ O objetivo inicial é fornecer um resumo simples da quantidade de cotas de cada 
 
 ## Running programmatically:
 
+### Instantiating
+
 If you're running your script from the repo's root, create a `parser` object with:
 ```python
 from sinacor_parser import SinacorParser
 
 parser = SinacorParser()
-```
-
+```  
+&nbsp;  
 By default, the pdfs with broker notes are read from the `.\pdf` directory. If you wish to read from anywhere else, use the `pdf_directory` keyword :
 
 ```python
-parser = SinacorParser(pdf_directory='full_path_to_directory')
-```
+parser = SinacorParser(pdf_directory="full_path_to_directory")
+```  
+### Processing
 
 To start reading the pdfs, run :
 
@@ -36,21 +39,26 @@ To start reading the pdfs, run :
 report, negotiations = parser.process()
 ```
 
-where `report` and `negotiations` are dataframes with the extracted data.
+where `report` and `negotiations` are dataframes with the extracted data.  
 
-Finally, to export the data to a spreadsheet use:
+### Exporting
 
-```
+Finally, to export the data to a spreadsheet use:  
+
+```python
 parser.export()
 ```
 
  or
 
-```
+```python
 parser.export(output_name="my_name_without_extension")
 ```
-
 to specify the name of the spreadsheet. If no keyword is provided, the default name of the output is `output.xlsx` and it's saved to the `.\output` directory.
+
+
+
+---
 
 ## TODO
 - [x] Implement import as module
