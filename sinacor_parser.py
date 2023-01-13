@@ -7,6 +7,9 @@ from collections import namedtuple
 import sys
 
 class SinacorParser:
+    """
+    Implements a Parser class to read pdfs and parse broker notes in the SINACOR format.
+    """
 
     # Properties
     print_output = False
@@ -50,6 +53,9 @@ class SinacorParser:
                         return ativo['sigla']
 
     def process(self):
+        """
+        Processes all the pdfs in a directory and returns a report and a negotiations Pandas dataframe.
+        """
         if self.command_line:
             print('Processando notas em ' + os.path.join(os.getcwd(), self.pdf_directory) + ' ...')
 
