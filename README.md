@@ -10,15 +10,15 @@ O objetivo inicial é fornecer um resumo simples da quantidade de cotas de cada 
 1. Add all of your pdf notes to the `pdf` directory. 
 2. Open a terminal window and navigate to the repo's root.
 3. Run the script `parser.py`
-    ```
-    python .\parser.py
+    ```shell
+    $  python .\parser.py
     ```
     > :warning: **CAUTION** : This tool is under development and might generate wrong results. Thus, I don't take any responsability for the reliability of the generated data.
 
 ## Running programmatically:
 
 If you're running your script from the repo's root, create a `parser` object with:
-```
+```python
 from sinacor_parser import SinacorParser
 
 parser = SinacorParser()
@@ -26,13 +26,13 @@ parser = SinacorParser()
 
 By default, the pdfs with broker notes are read from the `.\pdf` directory. If you wish to read from anywhere else, use the `pdf_directory` keyword :
 
-```
+```python
 parser = SinacorParser(pdf_directory='full_path_to_directory')
 ```
 
 To start reading the pdfs, run :
 
-```
+```python
 report, negotiations = parser.process()
 ```
 
