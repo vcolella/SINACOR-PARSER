@@ -3,23 +3,63 @@ Parser gratuito para notas de corretagem no formato SINACOR que não requer cone
 
 O objetivo inicial é fornecer um resumo simples da quantidade de cotas de cada ativo, preço médio e total do patrimônio.
 
-## Utilização
+---
 
-1. Coloque suas notas de corretagem na pasta `pdf`
-2. Abra um terminal e navegue até a raíz do repo
-3. Rode o script `parser.py`
+## Running in command line:
+
+1. Add all of your pdf notes to the `pdf` directory. 
+2. Open a terminal window and navigate to the repo's root.
+3. Run the script `parser.py`
     ```
-    > python .\parser.py
+    python .\parser.py
     ```
-    > :warning: **ATENÇÃO** : Esta ferramenta encontra-se em desenvolvimento e pode produzir resultados incorretos. Deste modo, não me responsabilizo pela confiabilidade das informações geradas com esta aplicação.
+    > :warning: **CAUTION** : This tool is under development and might generate wrong results. Thus, I don't take any responsability for the reliability of the generated data.
+
+## Running programmatically:
+
+If you're running your script from the repo's root, create a `parser` object with:
+```
+from sinacor_parser import SinacorParser
+
+parser = SinacorParser()
+```
+
+By default, the pdfs with broker notes are read from the `.\pdf` directory. If you wish to read from anywhere else, use the `pdf_directory` keyword :
+
+```
+parser = SinacorParser(pdf_directory='full_path_to_directory')
+```
+
+To start reading the pdfs, run :
+
+```
+report, negotiations = parser.process()
+```
+
+where `report` and `negotiations` are dataframes with the extracted data.
+
+Finally, to export the data to a spreadsheet use:
+
+```
+parser.export()
+```
+
+ or
+
+```
+parser.export(output_name="my_name_without_extension")
+```
+
+to specify the name of the spreadsheet. If no keyword is provided, the default name of the output is `output.xlsx` and it's saved to the `.\output` directory.
 
 ## TODO
-- [x] Reorganizar arquivos para o repo
-- [ ] Separar relatórios por cpf
-- [ ] Rastrear vendas
-- [ ] Cálculo de DARF para vendas (?)
-- [x] Implementar exportação p/ planilha
-- [x] Ler arquivos de múltiplas páginas
-- [x] Desconsiderar notas de corretagem repetidas
+- [x] Implement import as module
+- [x] Reorganize files for repo
+- [ ] Split reports by *cpf*
+- [ ] Track sales
+- [ ] Calculate DARF for sales
+- [x] Implement export to spreadsheet
+- [x] Read files with multiple pages
+- [x] Skip repeated notes
 - [ ] Adicionar exportação de `csv` 
 
